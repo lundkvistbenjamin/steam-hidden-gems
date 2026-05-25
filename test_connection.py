@@ -29,14 +29,14 @@ try:
         port=os.environ.get("SUPABASE_DB_PORT"),
         password=os.environ.get("SUPABASE_DB_PASSWORD")
     )
-    print("✅ Success! Database authenticated and session established.")
+    print("Success! Database authenticated and session established.")
 
     # Run a quick query to verify our newly created tables exist
     with conn.cursor() as cur:
         cur.execute(
             "SELECT table_name FROM information_schema.tables WHERE table_schema='public';")
         tables = [row[0] for row in cur.fetchall()]
-        print(f"ℹ️ Found tables in public schema: {tables}")
+        print(f"Found tables in public schema: {tables}")
 
     conn.close()
 except Exception as e:
