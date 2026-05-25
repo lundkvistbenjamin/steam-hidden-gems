@@ -216,3 +216,10 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# .gitignore
+.env
+__pycache__/
+*.pyc
+.DS_Store
+.devcontainer/.history/

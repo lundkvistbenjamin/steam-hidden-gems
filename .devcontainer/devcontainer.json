@@ -1,0 +1,19 @@
+{
+    "name": "Python 3 Devenv (Silverblue)",
+    "image": "mcr.microsoft.com/devcontainers/python:3.11",
+    "features": {
+        "ghcr.io/devcontainers/features/common-utils:2": {
+            "configureZshAsDefaultShell": false
+        }
+    },
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-python.python",
+                "ms-python.vscode-pylance"
+            ]
+        }
+    },
+    "postCreateCommand": "pip install requests psycopg2-binary python-dotenv",
+    "remoteUser": "vscode"
+}
