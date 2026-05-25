@@ -8,19 +8,19 @@ from dotenv import load_dotenv
 load_dotenv(override=True)
 
 # 1. Test Outbound API Route
-print("📡 Testing connectivity to SteamSpy API...")
+print("Testing connectivity to SteamSpy API...")
 try:
     response = requests.get(
         "https://steamspy.com/api.php?request=all&page=0", timeout=10)
     print(
-        f"✅ Success! SteamSpy answered with status code: {response.status_code}")
+        f"Success! SteamSpy answered with status code: {response.status_code}")
 except Exception as e:
-    print(f"❌ Failed to reach SteamSpy: {e}")
+    print(f"Failed to reach SteamSpy: {e}")
 
 print("-" * 50)
 
 # 2. Test Supabase Database Route
-print("🗄️ Testing connection to Supabase PostgreSQL...")
+print("Testing connection to Supabase PostgreSQL...")
 try:
     conn = psycopg2.connect(
         host=os.environ.get("SUPABASE_DB_HOST"),
@@ -40,4 +40,4 @@ try:
 
     conn.close()
 except Exception as e:
-    print(f"❌ Failed to connect to Supabase: {e}")
+    print(f"Failed to connect to Supabase: {e}")
