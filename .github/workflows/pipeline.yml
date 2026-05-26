@@ -5,6 +5,11 @@ on:
   workflow_dispatch:
   schedule:
     - cron: '0 1 * * *'
+
+# THE FIX: Global environment flag forces GitHub's runner to execute steps using Node 24
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   build:
     runs-on: ubuntu-latest
