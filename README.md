@@ -1,70 +1,69 @@
 # Nightly SteamSpy Batch ETL Pipeline
 
-Live Demo: https://gemengine.vercel.app/
+**Live Demo:** https://gemengine.vercel.app/
 
-A data ingestion pipeline engineered to extract application payloads from SteamSpy, transform metadata matrices, and execute highly efficient batch operations against a PostgreSQL instance hosted on Supabase.
+A lightweight ETL pipeline that extracts Steam game metadata from the SteamSpy API, transforms and validates incoming records, and synchronizes them with a PostgreSQL database hosted on Supabase. Built with Python, the project emphasizes efficient batch processing, transactional reliability, and clean database synchronization for analytics applications.
 
-## Overview
+## Core Features
 
-The ETL architecture manages database synchronization by:
-* Fetching comprehensive catalog dumps from the SteamSpy API sequentially
-* Recalculating dynamic user engagement parameters and formatting pricing structures
-* Utilizing atomic transaction queries to perform mass upserts into production tables
-* Retaining a relational ledger to monitor historical tracking status
+### Automated SteamSpy Data Extraction
 
-## Features
+The pipeline connects directly to the SteamSpy public API to retrieve batches of Steam application metadata. Network requests include timeout protection and graceful exception handling, allowing the process to fail safely without corrupting downstream operations.
 
-### Extraction and Network Fault Tolerance
-* Automated network handling featuring strict request timeouts
-* Graceful degradation protocols ensuring localized exceptions do not halt cascading routines
-* Integrated connectivity test scripts to map schema states across remote database environments
+### Data Transformation & Validation
 
-### Transformation and Validation Mechanics
-* String manipulation to prevent system truncation by capping data fields at size boundaries
-* Mathematical data normalizing that updates user review ratings automatically
-* Type verification routines that drop corruption anomalies before they enter storage arrays
+Incoming payloads are normalized before loading into PostgreSQL. The transformation layer validates application IDs, calculates total review counts and positive review percentages, applies safe defaults for missing fields, and truncates oversized strings to match database constraints.
 
-### Loading Optimization
-* Mass ingestion powered by batch processing queries
-* High-performance transaction execution using native driver array utilities
-* Atomic commit and rollback design to protect data integrity against transport loss
+### High-Performance Batch Loading
 
-## System Architecture
+Rather than executing thousands of individual INSERT statements, the pipeline performs bulk UPSERT operations using PostgreSQL's `ON CONFLICT` clause together with `psycopg2.execute_values`. This dramatically reduces database round trips while keeping game statistics synchronized with the latest SteamSpy data.
 
-The project operates across a decoupled three-tier architecture:
+### Incremental Processing Ledger
 
-1. **Extraction (SteamSpy API Data Target):** Connects to the public endpoint matrix to capture raw batch updates on concurrent traffic metrics and overall user voting logs.
-2. **Transformation (Python Engine Core):** Processes the raw payload dictionary, calculates positive approval trends, matches IDs, and organizes records into clean tabular formats.
-3. **Loading Layer (Supabase PostgreSQL):** Forwards ready collections using custom queries to run relational updates instantly.
+A dedicated `processed_apps` table tracks every application that has already been discovered. Existing games continue receiving updated statistics while newly discovered App IDs are logged automatically, preventing duplicate tracking records.
 
-## Technical Details
+## Tech Stack
 
-### Transaction Processing Strategy
-The engine utilizes a distinct dual-query strategy within a shared context loop to update active listings while tracking newly discovered records independently. It handles active metric updates via conflict resolution mechanics while simultaneously appending new tracking keys directly to an isolated system table.
+### Runtime
 
-### Dependencies and Tech Stack
-* **Runtime Environment:** Python 3.11
-* **Data Transport Layer:** `requests`
-* **Database Driver Extension:** `psycopg2-binary` (PostgreSQL client)
-* **Configuration Context:** `python-dotenv`
-* **Workflow Automation Engine:** GitHub Actions (Ubuntu Environment runner core)
+- Python 3.11
 
-## Output Interpretation
+### Database
 
-* **Core Cache Verification:** Scans the upstream server schema to report how many items are currently tracked by the system ledger.
-* **Payload Stream Confirmation:** Validates standard server responses to guarantee tracking channels remain open.
-* **Database Target Feed:** Reports bulk upload progress transparently as data streams into the PostgreSQL tables.
+- Supabase PostgreSQL
 
-## Limitations
+### Libraries
 
-* Hard-coded to process the default dashboard view index of the external provider API page targets.
-* Subject to upstream payload size variations and regional server latency timeouts.
-* Requires complete target database schema fields to be established prior to execution.
+- `requests` — SteamSpy API communication
+- `psycopg2-binary` — PostgreSQL driver
+- `python-dotenv` — Environment variable management
 
-## Security Note
+### Infrastructure
 
-Database authentication strings must be stored securely inside external repository engine systems. Connection configurations should be passed at runtime using encrypted context injections managed through automated runner properties.
+- GitHub Actions (scheduled execution)
+- SteamSpy Public API
+- Supabase PostgreSQL
 
-## License
+## Project Structure
 
-MIT License - see [LICENSE](LICENSE) file for details.
+```text
+.
+├── .github/
+│   └── workflows/
+│       └── pipeline.yml         # GitHub Actions workflow for scheduled ETL runs
+├── .vscode/                     # Development container and VS Code configuration
+├── etl.py                       # Main ETL pipeline (Extract, Transform, Load)
+├── test_connection.py           # Database connectivity verification utility
+├── requirements.txt             # Python project dependencies
+├── .gitignore
+├── LICENSE
+└── README.md
+```
+
+## Reliability & Data Integrity
+
+The pipeline is designed around transactional consistency. Every execution loads processed IDs into memory, prepares transformed records, performs bulk UPSERT operations, and commits the transaction only after every query succeeds. If any database operation fails, the transaction is rolled back automatically, ensuring partial updates never reach the database.
+
+## Security
+
+Database credentials are never stored in source code. Configuration is provided through environment variables, making the project suitable for deployment with GitHub Actions secrets, Supabase, or other CI/CD platforms.
