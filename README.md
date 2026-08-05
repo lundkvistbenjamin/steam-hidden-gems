@@ -1,4 +1,4 @@
-# Nightly SteamSpy Batch ETL Pipeline
+# Nightly SteamSpy ETL Pipeline
 
 **Live Demo:** https://gemengine.vercel.app/
 
