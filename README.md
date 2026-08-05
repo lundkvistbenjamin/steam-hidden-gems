@@ -1,8 +1,8 @@
 # Nightly SteamSpy ETL Pipeline
 
-**Live Demo:** https://gemengine.vercel.app/
+**Live Demo:** [https://gemengine.vercel.app/](https://gemengine.vercel.app/)
 
-**Full-Stack App Repository:** https://github.com/lundkvistbenjamin/steam-hidden-gems-app
+**Full-Stack App Repository:** [https://github.com/lundkvistbenjamin/steam-hidden-gems-app](https://github.com/lundkvistbenjamin/steam-hidden-gems-app)
 
 A lightweight ETL pipeline that extracts Steam game metadata from the SteamSpy API, transforms and validates incoming records, and synchronizes them with a PostgreSQL database hosted on Supabase. Built with Python, the project emphasizes efficient batch processing, transactional reliability, and clean database synchronization for analytics applications.
 
@@ -18,11 +18,15 @@ Incoming payloads are normalized before loading into PostgreSQL. The transformat
 
 ### High-Performance Batch Loading
 
-Rather than executing thousands of individual INSERT statements, the pipeline performs bulk UPSERT operations using PostgreSQL's `ON CONFLICT` clause together with `psycopg2.execute_values`. This dramatically reduces database round trips while keeping game statistics synchronized with the latest SteamSpy data.
+Rather than executing thousands of individual INSERT statements, the pipeline performs bulk UPSERT operations using PostgreSQL's `ON CONFLICT` clause together with `psycopg2.execute_values`.
+
+This dramatically reduces database round trips while keeping game statistics synchronized with the latest SteamSpy data.
 
 ### Incremental Processing Ledger
 
-A dedicated `processed_apps` table tracks every application that has already been discovered. Existing games continue receiving updated statistics while newly discovered App IDs are logged automatically, preventing duplicate tracking records.
+A dedicated `processed_apps` table tracks every application that has already been discovered.
+
+Existing games continue receiving updated statistics while newly discovered App IDs are logged automatically, preventing duplicate tracking records.
 
 ## Tech Stack
 
@@ -34,11 +38,12 @@ A dedicated `processed_apps` table tracks every application that has already bee
 
 - Supabase PostgreSQL
 
-### Libraries
+### Libraries & Tools
 
 - `requests` — SteamSpy API communication
 - `psycopg2-binary` — PostgreSQL driver
 - `python-dotenv` — Environment variable management
+- `pytest` — Unit testing framework
 
 ### Infrastructure
 
@@ -75,10 +80,36 @@ A dedicated `processed_apps` table tracks every application that has already bee
 └── test_connection.py           # Database and API connectivity verification script
 ```
 
+## ETL Workflow
+
+The pipeline follows a structured extraction, transformation, and loading workflow:
+
+### 1. Data Extraction
+
+Retrieve Steam application metadata in batches from the SteamSpy API with network timeout handling and failure protection.
+
+### 2. Data Transformation
+
+Normalize incoming records by validating application IDs, calculating derived metrics, applying defaults for missing values, and ensuring compatibility with database constraints.
+
+### 3. Data Loading
+
+Perform bulk UPSERT operations into PostgreSQL using transactional queries to efficiently synchronize game information.
+
 ## Reliability & Data Integrity
 
-The pipeline is designed around transactional consistency. Every execution loads processed IDs into memory, prepares transformed records, performs bulk UPSERT operations, and commits the transaction only after every query succeeds. If any database operation fails, the transaction is rolled back automatically, ensuring partial updates never reach the database.
+The pipeline is designed around transactional consistency.
+
+Every execution loads processed IDs into memory, prepares transformed records, performs bulk UPSERT operations, and commits the transaction only after every query succeeds.
+
+If any database operation fails, the transaction is rolled back automatically, ensuring partial updates never reach the database.
 
 ## Security
 
-Database credentials are never stored in source code. Configuration is provided through environment variables, making the project suitable for deployment with GitHub Actions secrets, Supabase, or other CI/CD platforms.
+Database credentials are never stored in source code.
+
+Configuration is provided through environment variables, making the project suitable for deployment with GitHub Actions secrets, Supabase, or other CI/CD platforms.
+
+## License
+
+This project is licensed under the MIT License. See the LICENSE file for more information.
