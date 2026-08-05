@@ -53,13 +53,26 @@ A dedicated `processed_apps` table tracks every application that has already bee
 ├── .github/
 │   └── workflows/
 │       └── pipeline.yml         # GitHub Actions workflow for scheduled ETL runs
-├── .vscode/                     # Development container and VS Code configuration
-├── etl.py                       # Main ETL pipeline (Extract, Transform, Load)
-├── test_connection.py           # Database connectivity verification utility
-├── requirements.txt             # Python project dependencies
+├── .vscode/
+│   └── settings.json            # VS Code configuration settings
+├── src/
+│   ├── db/
+│   │   ├── connection.py        # Database connection pool & context managers
+│   │   └── repository.py        # SQL queries and bulk database interaction logic
+│   ├── extractors/
+│   │   └── steamspy.py          # SteamSpy API client and network extraction
+│   ├── transformers/
+│   │   └── game_transformer.py  # Data payload cleaning, normalization, and mapping
+│   ├── config.py                # Environment variable loading and global configurations
+│   └── pipeline.py              # Main ETL pipeline orchestrator module
+├── tests/
+│   └── test_transformer.py      # Unit tests for data transformation logic
 ├── .gitignore
 ├── LICENSE
-└── README.md
+├── README.md
+├── requirements-dev.txt         # Development & testing dependencies (pytest)
+├── requirements.txt             # Core production dependencies
+└── test_connection.py           # Database and API connectivity verification script
 ```
 
 ## Reliability & Data Integrity
