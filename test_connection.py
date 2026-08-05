@@ -1,4 +1,3 @@
-# test_connection.py
 import os
 import requests
 import psycopg2
