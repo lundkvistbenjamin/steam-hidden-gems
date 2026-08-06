@@ -1,8 +1,8 @@
 # Steam Hidden Gems ETL Pipeline
 
-**Live Demo:** [https://gemengine.vercel.app/](https://gemengine.vercel.app/)
+**Live Demo:** https://gemengine.vercel.app/
 
-**Full-Stack App Repository:** [https://github.com/lundkvistbenjamin/steam-hidden-gems-app](https://github.com/lundkvistbenjamin/steam-hidden-gems-app)
+**Full-Stack App Repository:** https://github.com/lundkvistbenjamin/steam-hidden-gems-app
 
 A lightweight ETL pipeline that extracts Steam game metadata from the SteamSpy API, transforms and validates incoming records, and synchronizes them with a PostgreSQL database hosted on Supabase. Built with Python, the project emphasizes efficient batch processing, transactional reliability, and clean database synchronization for analytics applications.
 
