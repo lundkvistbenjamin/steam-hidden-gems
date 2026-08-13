@@ -1,6 +1,6 @@
 # Steam Hidden Gems ETL Pipeline
 
-**Live Demo:** https://gemengine.vercel.app/
+**Live Demo:** https://gemengine.vercel.app
 
 **Full-Stack App Repository:** https://github.com/lundkvistbenjamin/steam-hidden-gems-app
 
